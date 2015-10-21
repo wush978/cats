@@ -68,3 +68,18 @@ cat_noise <- function(){
     prob = c(0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1))
 }
 
+#'@export
+bg_cat <- function(..., lighten = 0.8, bw = TRUE, alpha = 0.5) {
+  img <- get_cat(...)
+  if (bw) {
+    img <- 0.2989*img[,,1] + 0.5870*img[,,2] + 0.1140*img[,,3]
+    img.dim <- dim(img)
+    img <- array(rep(img, 3), c(img.dim[1], img.dim[2], 3))
+  }
+  lighter <- img + (lighten * (1-img))
+  lighter.dim <- dim(lighter)
+  lighter <- array(c(lighter, matrix(alpha, lighter.dim[1], lighter.dim[2])), 
+        dim = c(lighter.dim[1], lighter.dim[2], lighter.dim[3] + 1))
+  lim <- par()
+  rasterImage(lighter, lim$usr[1], lim$usr[3], lim$usr[2], lim$usr[4])
+}
